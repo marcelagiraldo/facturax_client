@@ -1,0 +1,42 @@
+{
+  "expo": {
+    "scheme": "facturax",
+    "name": "facturax",
+    "slug": "facturax",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/facturax.png",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "splash": {
+      "image": "./assets/facturax.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#4a90e2"
+    },
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/facturax.png",
+        "backgroundColor": "#4a90e2"
+      },
+      "package": "com.marceag04.facturax",
+      "googleServicesFile":"./google-services.json"
+    },
+    "web": {
+      "favicon": "./assets/facturax.png"
+    },
+    "plugins": [
+      "expo-router"
+    ],
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "9de6fc67-e08e-4803-94ae-6c7026ed5a2b"
+      }
+    }
+  }
+}
