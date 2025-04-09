@@ -1,43 +1,49 @@
-import { Stack } from "expo-router";
+import { Stack, useRouter } from "expo-router";
 import { usePushNotifications } from "../hooks/usePushNotifications";
 import { useEffect } from "react";
-import { Text } from "react-native";
+import { AuthProvider, useAuth } from "../context/AuthContext";
 
-const HomeLayout = () => {
+const HomeLayoutContent = () => {
+  const { authState } = useAuth();
+  const router = useRouter();
 
-  const {expoPushToken, notification} = usePushNotifications()
-  useEffect(()=>{
-    console.log("expoPushToken",expoPushToken);
-    console.log("notifications",notification);   
-    
-    setTimeout(()=>{
-      console.log('Token',expoPushToken?.data || ''); 
-    },1000)
-  })
+  useEffect(() => {
+    if (authState?.authenticated === true) {
+      router.replace("/principal"); // redirige si está autenticado
+    } else if (authState?.authenticated === false) {
+      router.replace("/"); // redirige si NO está autenticado
+    }
+  }, [authState]);
 
-  
+  if (authState?.authenticated === null) {
+    return null; // o un loading
+  }
+
 
   return (
-    //<Text>{expoPushToken? expoPushToken.data : "No token available"}</Text>
-
     <Stack
       screenOptions={{
         headerStyle: {
-          backgroundColor: "#003B73", // Color de fondo azul oscuro
+          backgroundColor: "#003B73",
         },
-        headerTintColor: "#ffffff", // Texto del header en blanco
+        headerTintColor: "#ffffff",
         headerTitleStyle: {
           fontSize: 18,
           fontWeight: "bold",
         },
-        headerShadowVisible: false, // Elimina la sombra del header
+        headerShadowVisible: false,
+        headerShown: false,
       }}
     >
-      <Stack.Screen name="index" options={{ headerShown: false }} />
-      <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-      
-      <Stack.Screen name="principal" options={{headerShown: false}}/>
     </Stack>
+  );
+};
+
+const HomeLayout = () => {
+  return (
+    <AuthProvider>
+      <HomeLayoutContent />
+    </AuthProvider>
   );
 };
 

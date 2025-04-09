@@ -54,7 +54,7 @@ const Clients = () => {
 
   const handleEdit = (client) => {
     router.navigate({
-      pathname: "/principal/client/createclient",
+      pathname: "app/principal/client/createclient",
       params: {
         nombre: client.nombre,
         numero_documento: client.numero_documento,
@@ -113,7 +113,7 @@ const Clients = () => {
         )}
       />
 
-      {/* Modal de Información Completa */}
+      
       {infoModalVisible && selectedItem && (
         <Modal
           transparent
@@ -160,7 +160,6 @@ const Clients = () => {
         </Modal>
       )}
 
-      {/* Modal de Menú */}
       {menuModalVisible && selectedItem && (
         <Modal
           transparent

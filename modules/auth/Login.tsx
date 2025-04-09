@@ -1,5 +1,5 @@
 import { View, Text, Pressable, TextInput, StyleSheet } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
 import { Link, useRouter } from "expo-router";
@@ -11,6 +11,7 @@ import axios from "axios";
 
 import { useForm, Controller } from "react-hook-form";
 import { Ionicons } from "@expo/vector-icons";
+import { API_URL, useAuth } from "../../context/AuthContext";
 const LoginModule = () => {
   const router = useRouter();
   const {
@@ -23,41 +24,49 @@ const LoginModule = () => {
       password: "",
     },
   });
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const { onLogin } = useAuth();
+
   const [showPassword, setShowPassword] = useState(false);
-  const onLogin = async (data) => {
+  const onLogin_ = async (data) => {
     console.log("Datos enviados al backend:", data);
     try {
-        const response = await fetch("https://facturax.lat/api/usuarios/login", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                email: data.email,
-                password: data.password
-            })
-        });
+      const response = await fetch("https://facturax.lat/api/usuarios/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: data.email,
+          password: data.password,
+        }),
+      });
 
-        console.log("Esperando respuesta");
+      console.log("Esperando respuesta");
 
-        const responseData = await response.json();
+      const responseData = await response.json();
 
-        if (response.ok && responseData.success) {
-            await AsyncStorage.setItem("@userToken", responseData.token);
-            await AsyncStorage.setItem("@userData", JSON.stringify(responseData.user));
+      if (response.ok && responseData.success) {
+        await AsyncStorage.setItem("@userToken", responseData.token);
+        await AsyncStorage.setItem(
+          "@userData",
+          JSON.stringify(responseData.user)
+        );
 
-            alert("Inicio de sesión exitoso");
-            console.log(router);
-            router.replace("/principal");
-            console.log("Inicio sesión exitoso");
-        } else {
-            alert("Error en el inicio de sesión");
-        }
+        alert("Inicio de sesión exitoso");
+        console.log(router);
+        router.replace("/principal");
+        console.log("Inicio sesión exitoso");
+      } else {
+        alert("Error en el inicio de sesión");
+      }
     } catch (error) {
-        alert("Error en el inicio de sesión\nCorreo o contraseña incorrectos");
-        console.error("Error en la solicitud de inicio de sesión", error);
+      alert("Error en el inicio de sesión\nCorreo o contraseña incorrectos");
+      console.error("Error en la solicitud de inicio de sesión", error);
     }
-};
+  };
 
   const handleRegister = async () => {
     try {
@@ -67,7 +76,23 @@ const LoginModule = () => {
     }
   };
 
-  
+  const login = async () => {
+    const result = await onLogin!(email, password);
+    if (result && result.error) {
+      alert(result.msg);
+    } else {
+      router.replace("/principal");
+    }
+  };
+
+  useEffect(() => {
+    /* const testCall = async () => {
+      const result = await axios.get(`${API_URL}/usuarios`);
+
+      console.log("result in use effect of login: ", result);
+    };
+    testCall(); */
+  });
 
   return (
     <KeyboardAwareScrollView>
@@ -77,9 +102,9 @@ const LoginModule = () => {
           <Pressable style={styles.loginButton}>
             <Text style={styles.textWhite}>Iniciar Sesión</Text>
           </Pressable>
-            <Pressable style={styles.registerButton} onPress={handleRegister}>
-              <Text style={styles.textBlack}>Registrarse</Text>
-            </Pressable>
+          <Pressable style={styles.registerButton} onPress={handleRegister}>
+            <Text style={styles.textBlack}>Registrarse</Text>
+          </Pressable>
         </View>
 
         <View style={styles.contentContainer}>
@@ -99,8 +124,8 @@ const LoginModule = () => {
                 style={styles.input}
                 placeholder="Correo electrónico"
                 onBlur={onBlur}
-                onChangeText={onChange}
-                value={value}
+                onChangeText={(text: string) => setEmail(text)}
+                value={email}
                 keyboardType="email-address"
                 autoCapitalize="none"
                 maxLength={50}
@@ -125,8 +150,8 @@ const LoginModule = () => {
                   placeholder="Contraseña"
                   secureTextEntry={!showPassword}
                   onBlur={onBlur}
-                  onChangeText={onChange}
-                  value={value}
+                  onChangeText={(text: string) => setPassword(text)}
+                  value={password}
                   maxLength={20}
                 />
               )}
@@ -147,10 +172,7 @@ const LoginModule = () => {
             <Text style={{ color: "red" }}>{errors.password.message}</Text>
           )}
           <View style={styles.login}>
-            <Pressable
-              style={styles.loginButton}
-              onPress={handleSubmit(onLogin)}
-            >
+            <Pressable style={styles.loginButton} onPress={login}>
               <Text style={styles.textWhite}>Iniciar Sesión</Text>
             </Pressable>
 

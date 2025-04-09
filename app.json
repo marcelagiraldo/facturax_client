@@ -22,13 +22,14 @@
         "backgroundColor": "#4a90e2"
       },
       "package": "com.marceag04.facturax",
-      "googleServicesFile":"./google-services.json"
+      "googleServicesFile": "./google-services.json"
     },
     "web": {
       "favicon": "./assets/facturax.png"
     },
     "plugins": [
-      "expo-router"
+      "expo-router",
+      "expo-secure-store"
     ],
     "extra": {
       "router": {

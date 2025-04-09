@@ -11,7 +11,9 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
-import ProtectedRoute from "../ProtectedRoutes";
+import axios from "axios";
+import { API_URL } from "../../context/AuthContext";
+import * as SecureStore from "expo-secure-store";
 
 const HomeModule = () => {
   const [userData, setUserData] = useState(null);
@@ -20,12 +22,27 @@ const HomeModule = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       const storedUser = await AsyncStorage.getItem("@userData");
+
       if (storedUser) {
         const parsedUser = JSON.parse(storedUser);
         console.log("Datos del usuario en AsyncStorage:", parsedUser);
         setUserData(parsedUser);
+
+        try {
+          const result = await axios.get(
+            `${API_URL}/usuarios/${parsedUser.documento}`
+          );
+          setUserData(result.data);
+          console.log("Datos del usuario desde el backend:", result.data);
+        } catch (err) {
+          console.error(
+            "Error al obtener usuario:",
+            err?.response?.data || err.message
+          );
+        }
       }
     };
+
     fetchUserData();
   }, []);
 
@@ -37,7 +54,6 @@ const HomeModule = () => {
     }
   };
   return (
-    <ProtectedRoute>
     <SafeAreaView style={styles.safeContainer}>
       <StatusBar hidden={false} style="light" />
       <SvgTop />
@@ -45,7 +61,7 @@ const HomeModule = () => {
         <Image source={logo} style={{ width: 120, height: 120 }} />
       </View>
       {userData && (
-        <Text style={styles.welcomeText}>¡Hola, {userData.nombre}!</Text>
+        <Text style={styles.welcomeText}>¡Hola, {userData.nombre_}!</Text>
       )}
 
       <View style={styles.container}>
@@ -82,13 +98,12 @@ const HomeModule = () => {
         </View>
       </View>
     </SafeAreaView>
-    </ProtectedRoute>
   );
 };
 const styles = StyleSheet.create({
   safeContainer: {
     flex: 1,
-    paddingTop: 10, // Espacio extra para evitar superposición con el SVG
+    paddingTop: 10, 
     alignItems: "center",
     backgroundColor: "#fff",
   },
@@ -105,10 +120,10 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    justifyContent: "center", // Centra la tarjeta en la pantalla
+    justifyContent: "center", 
     alignItems: "center",
     width: "100%",
-    marginTop: 60, // Ajusta para evitar que se monte en el SVG
+    marginTop: 60,
   },
   card: {
     backgroundColor: "#4A90E2",
@@ -146,8 +161,8 @@ const styles = StyleSheet.create({
   },
   pos: {
     position: "absolute",
-    top: 20, // Ajusta según necesites
-    right: 20, // O usa right: 20 si lo prefieres a la derecha
+    top: 20, 
+    right: 20, 
     width: 100,
     height: 50,
     backgroundColor: "#17BF49",
@@ -163,7 +178,7 @@ const styles = StyleSheet.create({
   content: {
     marginTop: 90,
     padding: 20,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     borderRadius: 10,
   },
 });

@@ -1,32 +1,32 @@
-import { View, Pressable, StyleSheet } from "react-native";
+import { View, Pressable, StyleSheet, Text } from "react-native";
 import React from "react";
 import {
   DrawerContentScrollView,
-  DrawerItemList,
 } from "@react-navigation/drawer";
 import { AntDesign } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
-import { Link, useRouter } from "expo-router";
-import { StatusBar } from "expo-status-bar";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useRouter } from "expo-router";
+import { StatusBar } from "expo-status-bar"; 
+import { useAuth } from "../../context/AuthContext";
 
 const CustomDrawer = (props: any) => {
+  const router = useRouter();
+  const { onLogout } = useAuth(); 
+
   const handleToggleDrawer = () => {
     props.navigation.closeDrawer();
   };
-  const router = useRouter();
+
   const handleLogout = async () => {
     try {
-      await AsyncStorage.removeItem("@userToken"); // Elimina el token almacenado
-      await AsyncStorage.removeItem("@userData"); // Elimina los datos del usuario
-      router.replace("/login"); // Reemplaza la pantalla actual con la de login
+      await onLogout?.();
+      router.replace("/login");
     } catch (error) {
       console.error("Error al cerrar sesión:", error);
     }
   };
+
   return (
     <DrawerContentScrollView contentContainerStyle={styles.container}>
-      {/* Botón de cerrar */}
       <StatusBar hidden={false} style="light" />
       <View style={styles.header}>
         <Pressable onPress={handleToggleDrawer} style={styles.closeButton}>
@@ -34,12 +34,25 @@ const CustomDrawer = (props: any) => {
         </Pressable>
       </View>
 
-      {/* Menú de navegación */}
       <View style={styles.drawerMenu}>
-        <DrawerItemList {...props} />
+        <Pressable style={styles.menuItem} onPress={() => router.replace("/principal/home")}>
+          <AntDesign name="home" size={24} />
+          <Text style={styles.menuText}>Inicio</Text>
+        </Pressable>
+        <Pressable style={styles.menuItem} onPress={() => router.replace("/principal/bill")}>
+          <AntDesign name="profile" size={24} />
+          <Text style={styles.menuText}>Facturas</Text>
+        </Pressable>
+        <Pressable style={styles.menuItem} onPress={() => router.replace("/principal/client")}>
+          <AntDesign name="team" size={24} />
+          <Text style={styles.menuText}>Clientes</Text>
+        </Pressable>
+        <Pressable style={styles.menuItem} onPress={() => router.replace("/principal/product")}>
+          <AntDesign name="appstore1" size={24} />
+          <Text style={styles.menuText}>Productos</Text>
+        </Pressable>
       </View>
 
-      {/* Botón de logout */}
       <View style={styles.logoutContainer}>
         <Pressable style={styles.logoutButton} onPress={handleLogout}>
           <AntDesign name="logout" size={30} />
@@ -61,6 +74,17 @@ const styles = StyleSheet.create({
   },
   closeButton: {
     padding: 5,
+  },
+  menuItem: {
+    flexDirection: "row",
+    alignItems: "center",
+    padding: 20,
+    width: '100%',
+  },
+  menuText: {
+    marginLeft: 20,
+    fontSize: 20,
+    width: '100%',
   },
   drawerMenu: {
     flex: 1,

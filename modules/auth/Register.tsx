@@ -39,11 +39,9 @@ const RegisterModule = () => {
       rol:""
     },
   });
-
+  
   const onRegister = async (data) => {
     const { confirmPassword, ...userData } = data;
-    
-    // Asegúrate de usar el nombre de campo correcto (contraseia en lugar de contrasena)
     const formattedUserData = {
       ...userData,
     };
@@ -112,7 +110,7 @@ const RegisterModule = () => {
                 rules={{
                   required: "El documento es obligatorio",
                   pattern: {
-                    value: /^[0-9]+$/, // Solo números
+                    value: /^[0-9]+$/,
                     message: "El documento solo debe contener números",
                   },
                   maxLength: {
@@ -230,7 +228,7 @@ const RegisterModule = () => {
                 rules={{
                   required: "El teléfono es obligatorio",
                   pattern: {
-                    value: /^[0-9]+$/, // Solo números
+                    value: /^[0-9]+$/,
                     message: "El teléfono solo debe contener números",
                   },
                   minLength: {
@@ -246,7 +244,7 @@ const RegisterModule = () => {
                   <TextInput
                     style={styles.input}
                     placeholder="Teléfono"
-                    keyboardType="phone-pad" // Solo números y caracteres telefónicos
+                    keyboardType="phone-pad"
                     onBlur={onBlur}
                     onChangeText={onChange}
                     value={value}
@@ -371,7 +369,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 0,
     bottom: 200,
-    width: "100%", // Ocupa todo el ancho
+    width: "100%",
     alignItems: "center",
   },
   buttonContainer: {
