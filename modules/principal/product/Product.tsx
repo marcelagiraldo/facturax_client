@@ -11,19 +11,21 @@ import {
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { useRouter } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import SearchBar from "../../../components/atoms/ShareBar";
 
 const ProductItem = ({ item, onEdit }) => (
   <View style={styles.card}>
-    <Pressable style={styles.editButton} onPress={() => onEdit(item)}>
-      <AntDesign name="edit" size={18} color="blue" />
-    </Pressable>
     <Text style={styles.productName}>{item.descripcion}</Text>
-    <Text>Código: {item.codigo}</Text>
-    <Text>Precio: ${item.precio_venta}</Text>
-    <Text>Iva: ${item.impuesto_id_fk}</Text>
+    <Text style={styles.textContent}>Código: {item.codigo}</Text>
+    <Text style={styles.textContent}>Precio: ${item.precio_venta}</Text>
+    <Text style={styles.textContent}>Iva: ${item.impuesto_id_fk}</Text>
     <View style={styles.statusContainer}>
       <Text style={styles.status}>ACTIVO</Text>
     </View>
+    <Pressable style={styles.editButton} onPress={() => onEdit(item)}>
+      <MaterialIcons name="edit" size={20} color="black" />
+    </Pressable>
   </View>
 );
 
@@ -32,7 +34,6 @@ const App = () => {
   const [search, setSearch] = useState("");
   const router = useRouter();
   const [loading, setLoading] = useState(false); // Estado para mostrar la carga
-
 
   const fetchProducts = async () => {
     try {
@@ -46,7 +47,9 @@ const App = () => {
       const user_id = user.documento;
       console.log("Usuario ID:", user_id);
 
-      const response = await fetch(`https://facturax.lat/api/productos/${user_id}`);
+      const response = await fetch(
+        `https://facturax.lat/api/productos/${user_id}`
+      );
       const data = await response.json();
       setProducts(data);
     } catch (error) {
@@ -81,15 +84,7 @@ const App = () => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <TextInput
-          style={styles.searchInput}
-          placeholder="Buscar producto"
-          value={search}
-          onChangeText={setSearch}
-        />
-        <AntDesign name="search1" size={24} color="black" />
-      </View>
+      <SearchBar search={search} setSearch={setSearch} placeholder="Buscar producto"/>
 
       <View style={styles.titleContainer}>
         <Pressable onPress={handleCreate}>
@@ -101,7 +96,9 @@ const App = () => {
       <FlatList
         data={filteredProducts}
         keyExtractor={(item) => item.id.toString()} // Asegurar que sea una cadena
-        renderItem={({ item }) => <ProductItem item={item} onEdit={handleEdit} />}
+        renderItem={({ item }) => (
+          <ProductItem item={item} onEdit={handleEdit} />
+        )}
         numColumns={2}
       />
     </View>
@@ -124,8 +121,8 @@ const styles = StyleSheet.create({
   },
   searchInput: {
     flex: 1,
-    height: 40,
-    fontSize: 16,
+    height: 50,
+    fontSize: 20,
   },
   titleContainer: {
     flexDirection: "row",
@@ -138,25 +135,31 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
   card: {
-    backgroundColor: "#e0e0e0",
-    flex: 1,
+    backgroundColor: "#E3F2FD",
     margin: 5,
     padding: 15,
     borderRadius: 10,
     position: "relative",
+    fontSize: 15,
+    flexDirection: "column",
+    justifyContent: "space-between",
+    height: "auto",
+    width:'48%',
+    display:'flex'
   },
   productName: {
     fontWeight: "bold",
-    fontSize: 16,
+    fontSize: 20,
     marginBottom: 8,
+    marginTop: 10,
   },
   editButton: {
     position: "absolute",
-    top: 10,
     right: 10,
+    top:5
   },
   statusContainer: {
-    marginTop: 10,
+    marginTop: "auto",
     backgroundColor: "#00c853",
     borderRadius: 20,
     paddingVertical: 5,
@@ -166,6 +169,13 @@ const styles = StyleSheet.create({
   status: {
     color: "white",
     fontWeight: "bold",
+  },
+  productCard: {
+    backgroundColor: "blue",
+  },
+  textContent: {
+    fontSize: 16,
+    padding: 5,
   },
 });
 

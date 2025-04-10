@@ -59,24 +59,24 @@ const HomeModule = () => {
       <SvgTop />
       <View style={styles.logoContainer}>
         <Image source={logo} style={{ width: 120, height: 120 }} />
-      </View>
-      {userData && (
+        {userData && (
         <Text style={styles.welcomeText}>¡Hola, {userData.nombre_}!</Text>
       )}
-
+      </View>
+      
       <View style={styles.container}>
         <Pressable style={styles.pos} onPress={handleCreate}>
           <Text style={styles.posText}>POS</Text>
         </Pressable>
         <View style={styles.content}>
           <CardInfo
-            color="#4A90E2"
+            color="#0074D9"
             iconComponent={<AntDesign name="home" size={24} color="black" />}
             text="Ventas del día"
             amount="$ 0.00"
           />
           <CardInfo
-            color="#4A90E2"
+            color="#0074D9"
             iconComponent={
               <Ionicons name="cash-outline" size={24} color="black" />
             }
@@ -84,7 +84,7 @@ const HomeModule = () => {
             amount="$ 0.00"
           />
           <CardInfo
-            color="#4A90E2"
+            color="#0074D9"
             iconComponent={
               <MaterialCommunityIcons
                 name="currency-usd"
@@ -115,15 +115,17 @@ const styles = StyleSheet.create({
   },
   logoContainer: {
     position: "absolute",
-    marginTop: 5,
-    right: 20,
+    marginTop: 3,
+    left: 20,
+    flexDirection:'row',
+    alignItems:'center'
   },
   container: {
     flex: 1,
     justifyContent: "center", 
     alignItems: "center",
     width: "100%",
-    marginTop: 60,
+    marginTop: 100,
   },
   card: {
     backgroundColor: "#4A90E2",
@@ -141,7 +143,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   iconContainer: {
-    backgroundColor: "#FFC107",
+    backgroundColor: "#FFB400",
     width: 50,
     height: 50,
     borderRadius: 25,
@@ -155,7 +157,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   amount: {
-    fontSize: 18,
+    fontSize: 32,
     color: "white",
     fontWeight: "bold",
   },
@@ -165,7 +167,9 @@ const styles = StyleSheet.create({
     right: 20, 
     width: 100,
     height: 50,
-    backgroundColor: "#17BF49",
+    margin:5,
+    marginBottom:35,
+    backgroundColor: "#388E3C",
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 10,
@@ -178,7 +182,6 @@ const styles = StyleSheet.create({
   content: {
     marginTop: 90,
     padding: 20,
-    backgroundColor: "#fff",
     borderRadius: 10,
   },
 });

@@ -4,9 +4,9 @@ import AntDesign from "@expo/vector-icons/AntDesign";
 
 const ClientLayout = () => {
   return (
-    <Tabs initialRouteName="homeClient">
+    <Tabs initialRouteName="client">
       <Tabs.Screen
-        name="homeClient"
+        name="client"
         options={{
           headerShown: false,
           title: "Inicio",

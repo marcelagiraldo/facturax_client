@@ -16,14 +16,14 @@ const CreateProduct = () => {
   const router = useRouter();
   const params = useLocalSearchParams();
 
-  const isEditing = Boolean(params.id); // Verifica si se está editando o creando
+  const isEditing = Boolean(params.id);
   const [product, setProduct] = useState({
     codigo: params.codigo || "",
     descripcion: params.descripcion || "",
     precio_venta: params.precio_venta || "",
     impuesto_id_fk: params.impuesto_id_fk || "",
   });
-  const { expoPushToken, notification } = usePushNotifications();
+  const { expoPushToken } = usePushNotifications();
   const [taxes, setTaxes] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -73,7 +73,6 @@ const CreateProduct = () => {
 
       if (response.ok) {
         alert(`Producto ${isEditing ? "actualizado" : "creado"} con éxito`);
-
         if (expoPushToken) {
           await fetch("https://exp.host/--/api/v2/push/send", {
             method: "POST",
@@ -99,55 +98,53 @@ const CreateProduct = () => {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>
+    <View style={formStyles.container}>
+      <Text style={formStyles.title}>
         {isEditing ? "EDITAR PRODUCTO" : "CREAR PRODUCTO"}
       </Text>
-
-      <View style={styles.row}>
-        <View style={styles.inputContainer}>
-          <Text>Código</Text>
-          <TextInput
-            style={styles.input}
-            onChangeText={(text) => handleChange("codigo", text)}
-            value={product.codigo}
-            keyboardType="numeric"
-          />
-        </View>
-
-        <View style={styles.inputContainer}>
-          <Text>Nombre</Text>
-          <TextInput
-            style={styles.input}
-            onChangeText={(text) => handleChange("descripcion", text)}
-            value={product.descripcion}
-          />
-        </View>
+      <View style={formStyles.inputContainer}>
+        <Text style={formStyles.textLabel}>Código</Text>
+        <TextInput
+          style={formStyles.input}
+          onChangeText={(text) => handleChange("codigo", text)}
+          value={product.codigo}
+          keyboardType="numeric"
+        />
       </View>
 
-      <View style={styles.row}>
-        <View style={styles.inputContainer}>
-          <Text>Precio</Text>
-          <TextInput
-            style={styles.input}
-            onChangeText={(text) => handleChange("precio_venta", text)}
-            value={product.precio_venta}
-            keyboardType="numeric"
-          />
-        </View>
+      <View style={formStyles.inputContainer}>
+        <Text style={formStyles.textLabel}>Nombre</Text>
+        <TextInput
+          style={formStyles.input}
+          onChangeText={(text) => handleChange("descripcion", text)}
+          value={product.descripcion}
+        />
+      </View>
 
-        <View style={styles.inputContainer}>
-          <Text>Iva</Text>
-          {loading ? (
-            <ActivityIndicator size="small" color="#0000ff" />
-          ) : (
+      <View style={formStyles.inputContainer}>
+        <Text style={formStyles.textLabel}>Precio</Text>
+        <TextInput
+          style={formStyles.input}
+          onChangeText={(text) => handleChange("precio_venta", text)}
+          value={product.precio_venta}
+          keyboardType="numeric"
+        />
+      </View>
+
+      <View style={formStyles.inputContainer}>
+        <Text style={formStyles.textLabel}>IVA</Text>
+        {loading ? (
+          <ActivityIndicator size="small" color="#0000ff" />
+        ) : (
+          <View style={formStyles.pickerContainer}>
             <Picker
               selectedValue={product.impuesto_id_fk}
               onValueChange={(itemValue) =>
                 handleChange("impuesto_id_fk", itemValue)
               }
+              style={formStyles.picker}
             >
-              <Picker.Item label="Seleccione un impuesto..." value="" />
+              <Picker.Item label="Seleccione un impuesto" value="" />
               {taxes.map((tax) => (
                 <Picker.Item
                   key={tax.p_identificacion}
@@ -156,12 +153,15 @@ const CreateProduct = () => {
                 />
               ))}
             </Picker>
-          )}
-        </View>
+          </View>
+        )}
       </View>
 
-      <TouchableOpacity style={styles.button} onPress={handleSubmit}>
-        <Text style={styles.buttonText}>
+      <TouchableOpacity
+        style={formStyles.registerButton}
+        onPress={handleSubmit}
+      >
+        <Text style={formStyles.textWhite}>
           {isEditing ? "Guardar Cambios" : "Aceptar"}
         </Text>
       </TouchableOpacity>
@@ -169,47 +169,67 @@ const CreateProduct = () => {
   );
 };
 
-const styles = StyleSheet.create({
+// 🔁 Reutilizando tus estilos existentes
+const formStyles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
     backgroundColor: "#fff",
-  },
-  title: {
-    fontSize: 22,
-    fontWeight: "bold",
-    textAlign: "center",
-    marginBottom: 30,
   },
   row: {
     flexDirection: "row",
     justifyContent: "space-between",
   },
   inputContainer: {
-    width: "48%",
+    width: "100%",
     marginBottom: 20,
   },
+  textLabel: {
+    fontSize: 18,
+    fontWeight: "bold",
+    marginBottom: 5,
+  },
   input: {
-    height: 40,
-    borderBottomWidth: 1,
-    borderBottomColor: "#ccc",
-    marginTop: 8,
+    width: "100%",
+    height: 45,
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 10,
+    textAlign: "left",
+    fontSize: 16,
+    paddingHorizontal: 15,
   },
-  picker: {
-    height: 40,
-    marginTop: 8,
-  },
-  button: {
+  registerButton: {
     backgroundColor: "#4A90E2",
-    padding: 15,
-    borderRadius: 30,
+    paddingVertical: 12,
+    paddingHorizontal: 30,
+    borderRadius: 10,
     alignItems: "center",
     marginTop: 20,
   },
-  buttonText: {
-    color: "#fff",
-    fontSize: 18,
+  textWhite: {
+    color: "white",
+    fontWeight: "bold",
+    fontSize: 20,
   },
+  title: {
+    fontSize: 24,
+    fontWeight: "bold",
+    textAlign: "center",
+    marginBottom: 30,
+  },
+  pickerContainer: {
+    width: "100%",
+    height: 50,
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 10,
+    justifyContent: "center",
+    paddingHorizontal: 10,
+  },
+  picker: {
+    fontSize: 18,
+  }
 });
 
 export default CreateProduct;

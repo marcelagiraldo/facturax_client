@@ -9,6 +9,7 @@ import {
 import { useLocalSearchParams, useRouter } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import { Picker } from "@react-native-picker/picker";
 
 const CrearClientesModule = () => {
   const params = useLocalSearchParams();
@@ -24,6 +25,9 @@ const CrearClientesModule = () => {
     ciudad: params.ciudad || "",
     departamento: params.departamento || "",
   });
+
+  const [departamentos, setDepartamentos] = useState([]);
+  const [ciudades, setCiudades] = useState({});
 
   const handleChange = (key, value) => {
     setClient((prev) => ({ ...prev, [key]: value }));
@@ -58,7 +62,7 @@ const CrearClientesModule = () => {
 
       if (response.ok) {
         alert(`Cliente ${isEditing ? "actualizado" : "creado"} con éxito`);
-        router.replace("/principal/client/homeClient");
+        router.replace("/principal/client/client");
       } else {
         alert("Error: " + result.error);
       }
@@ -68,6 +72,34 @@ const CrearClientesModule = () => {
     }
   };
 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch(
+          "https://www.datos.gov.co/resource/xdk5-pm3f.json"
+        );
+        const data = await response.json();
+
+        const departamentosUnicos = [
+          ...new Set(data.map((item) => item.departamento)),
+        ];
+        setDepartamentos(departamentosUnicos.sort());
+
+        const agrupadas = {};
+        data.forEach((item) => {
+          if (!agrupadas[item.departamento]) agrupadas[item.departamento] = [];
+          agrupadas[item.departamento].push(item.municipio);
+        });
+
+        setCiudades(agrupadas);
+      } catch (error) {
+        console.error("Error al obtener datos de ciudades:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   return (
     <KeyboardAwareScrollView>
       <View style={styles.container}>
@@ -75,18 +107,22 @@ const CrearClientesModule = () => {
           {isEditing ? "EDITAR CLIENTE" : "CREAR CLIENTE"}
         </Text>
         <View style={styles.row}>
-          {/* <View style={styles.inputContainer}>
-          <Text>Tipo numero_documento</Text>
-          <Picker
-            selectedValue={client.tipo_numero_documento}
-            onValueChange={(value) => handleChange("tipo_numero_documento", value)}
-          >
-            <Picker.Item label="CC" value="cedula" />
-            <Picker.Item label="Pasaporte" value="pasaporte" />
-            <Picker.Item label="Nit" value="nit" />
-            <Picker.Item label="CE" value="cedulae" />
-          </Picker>
-        </View> */}
+          <View style={styles.inputContainer}>
+            <Text>Tipo documento</Text>
+            <View style={styles.pickerContainer}>
+              <Picker
+                onValueChange={(value) =>
+                  handleChange("tipo_numero_documento", value)
+                }
+                style={styles.picker}
+              >
+                <Picker.Item label="CC" value="cedula" />
+                <Picker.Item label="Pasaporte" value="pasaporte" />
+                <Picker.Item label="Nit" value="nit" />
+                <Picker.Item label="CE" value="cedulae" />
+              </Picker>
+            </View>
+          </View>
           <View style={styles.inputContainer}>
             <Text>Identificación</Text>
             <TextInput
@@ -134,22 +170,37 @@ const CrearClientesModule = () => {
             />
           </View>
         </View>
-        <View style={styles.row}>
-          <View style={styles.inputContainer}>
-            <Text>Departamento</Text>
-            <TextInput
-              style={styles.input}
-              onChangeText={(value) => handleChange("departamento", value)}
-              value={client.departamento}
-            />
+        <View style={styles.inputContainer}>
+          <Text>Departamento</Text>
+          <View style={styles.pickerContainer}>
+            <Picker
+              selectedValue={client.departamento}
+              onValueChange={(value) => {
+                handleChange("departamento", value);
+                handleChange("ciudad", ""); // reset ciudad cuando cambia dep
+              }}
+            >
+              <Picker.Item label="Seleccione un departamento" value="" />
+              {departamentos.map((dep, index) => (
+                <Picker.Item key={index} label={dep} value={dep} />
+              ))}
+            </Picker>
           </View>
-          <View style={styles.inputContainer}>
-            <Text>Ciudad</Text>
-            <TextInput
-              style={styles.input}
-              onChangeText={(value) => handleChange("ciudad", value)}
-              value={client.ciudad}
-            />
+        </View>
+        <View style={styles.inputContainer}>
+          <Text>Ciudad</Text>
+          <View style={styles.pickerContainer}>
+            <Picker
+              selectedValue={client.ciudad}
+              onValueChange={(value) => handleChange("ciudad", value)}
+              enabled={!!client.departamento}
+            >
+              <Picker.Item label="Seleccione una ciudad" value="" />
+              {client.departamento &&
+                ciudades[client.departamento]?.map((city, index) => (
+                  <Picker.Item key={index} label={city} value={city} />
+                ))}
+            </Picker>
           </View>
         </View>
         <View style={styles.row}>
@@ -172,28 +223,65 @@ const CrearClientesModule = () => {
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 20 },
+  container: {
+    flex: 1,
+    padding: 20,
+    backgroundColor: "#fff",
+  },
   title: {
     fontSize: 24,
     fontWeight: "bold",
     textAlign: "center",
-    marginBottom: 20,
+    marginBottom: 30,
   },
   row: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginBottom: 10,
+    flexWrap: "wrap",
   },
-  inputContainer: { flex: 1, marginRight: 10 },
-  input: { borderBottomWidth: 1, borderBottomColor: "#ccc", height: 40 },
+  inputContainer: {
+    width: "100%",
+    marginBottom: 20,
+  },
+  textLabel: {
+    fontSize: 16,
+    fontWeight: "bold",
+    marginBottom: 5,
+  },
+  input: {
+    width: "100%",
+    height: 45,
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 10,
+    fontSize: 18,
+    paddingHorizontal: 15,
+  },
   button: {
     backgroundColor: "#4A90E2",
-    padding: 15,
-    borderRadius: 30,
-    marginTop: 20,
+    paddingVertical: 12,
+    paddingHorizontal: 30,
+    borderRadius: 10,
     alignItems: "center",
+    marginTop: 20,
   },
-  buttonText: { color: "white", fontSize: 16 },
+  buttonText: {
+    color: "#fff",
+    fontWeight: "bold",
+    fontSize: 20,
+  },
+  pickerContainer: {
+    width: "100%",
+    height: 50,
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 10,
+    justifyContent: "center",
+    paddingHorizontal: 10,
+  },
+  picker: {
+    fontSize: 18,
+  },
 });
 
 export default CrearClientesModule;

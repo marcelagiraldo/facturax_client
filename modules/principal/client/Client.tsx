@@ -11,6 +11,7 @@ import { AntDesign, Ionicons } from "@expo/vector-icons";
 import { TextInput } from "react-native-gesture-handler";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
+import SearchBar from "../../../components/atoms/ShareBar";
 
 const ClientItem = ({}) => {};
 const Clients = () => {
@@ -53,8 +54,8 @@ const Clients = () => {
   }, []);
 
   const handleEdit = (client) => {
-    router.navigate({
-      pathname: "app/principal/client/createclient",
+    router.push({
+      pathname: "/principal/client/createclient",
       params: {
         nombre: client.nombre,
         numero_documento: client.numero_documento,
@@ -85,15 +86,11 @@ const Clients = () => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <TextInput
-          style={styles.searchInput}
-          placeholder="Buscar producto"
-          value={search}
-          onChangeText={setSearch}
-        />
-        <AntDesign name="search1" size={24} color="black" />
-      </View>
+      <SearchBar
+        search={search}
+        setSearch={setSearch}
+        placeholder="Buscar cliente"
+      />
       <FlatList
         data={filteredClients}
         keyExtractor={(item) => item.numero_documento}
@@ -113,7 +110,6 @@ const Clients = () => {
         )}
       />
 
-      
       {infoModalVisible && selectedItem && (
         <Modal
           transparent
@@ -125,29 +121,32 @@ const Clients = () => {
             <View style={styles.infoModal}>
               <Text style={styles.modalTitle}>Información del Cliente</Text>
               <Text>
-                <Text style={styles.label}>Nombre:</Text> {selectedItem.nombre}
+                <Text style={styles.label}>Nombre:</Text>
+                <Text style={styles.value}> {selectedItem.nombre}</Text>
               </Text>
               <Text>
                 <Text style={styles.label}>Docuemnto:</Text>{" "}
-                {selectedItem.numero_documento}
+                <Text style={styles.value}> {selectedItem.numero_documento}</Text>
               </Text>
               <Text>
-                <Text style={styles.label}>Email:</Text> {selectedItem.email}
+                <Text style={styles.label}>Email:</Text>
+                <Text style={styles.value}> {selectedItem.email}</Text>
               </Text>
               <Text>
-                <Text style={styles.label}>Telefono:</Text>{" "}
-                {selectedItem.telefono}
+                <Text style={styles.label}>Teléfono: </Text>
+                <Text style={styles.value}>{selectedItem.telefono}</Text>
               </Text>
               <Text>
                 <Text style={styles.label}>Direccion:</Text>{" "}
-                {selectedItem.direccion}
+                <Text style={styles.value}> {selectedItem.direccion}</Text>
               </Text>
               <Text>
                 <Text style={styles.label}>Departamento:</Text>{" "}
-                {selectedItem.departamento}
+                <Text style={styles.value}> {selectedItem.departamento}</Text>
               </Text>
               <Text>
-                <Text style={styles.label}>Ciudad:</Text> {selectedItem.ciudad}
+                <Text style={styles.label}>Ciudad:</Text>
+                <Text style={styles.value}> {selectedItem.ciudad}</Text>
               </Text>
               <TouchableOpacity
                 style={styles.closeButton}
@@ -248,13 +247,14 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   modalTitle: {
-    fontSize: 20,
+    fontSize: 24,
     fontWeight: "bold",
     marginBottom: 10,
     color: "#333",
   },
   label: {
     fontWeight: "bold",
+    fontSize: "16",
   },
   closeButton: {
     backgroundColor: "#007bff",
@@ -279,6 +279,10 @@ const styles = StyleSheet.create({
     flex: 1,
     height: 40,
     fontSize: 16,
+  },
+  value: {
+    fontSize: 16, 
+    color: '#333',
   },
 });
 
