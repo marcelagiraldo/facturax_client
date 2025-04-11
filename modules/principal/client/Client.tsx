@@ -13,7 +13,6 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
 import SearchBar from "../../../components/atoms/ShareBar";
 
-const ClientItem = ({}) => {};
 const Clients = () => {
   const [infoModalVisible, setInfoModalVisible] = useState(false);
   const [menuModalVisible, setMenuModalVisible] = useState(false);
@@ -22,7 +21,7 @@ const Clients = () => {
   const [client, setClient] = useState([]);
   const router = useRouter();
 
-  const filteredClients = client.filter((client) =>
+  const filteredClients = client.filter((client:any) =>
     client.nombre.toLowerCase().includes(search.toLowerCase())
   );
 
@@ -53,7 +52,7 @@ const Clients = () => {
     fetchClient();
   }, []);
 
-  const handleEdit = (client) => {
+  const handleEdit = (client:any) => {
     router.push({
       pathname: "/principal/client/createclient",
       params: {
@@ -93,7 +92,7 @@ const Clients = () => {
       />
       <FlatList
         data={filteredClients}
-        keyExtractor={(item) => item.numero_documento}
+        keyExtractor={(item:any) => item.numero_documento}
         renderItem={({ item }) => (
           <TouchableOpacity
             style={styles.card}
@@ -254,7 +253,7 @@ const styles = StyleSheet.create({
   },
   label: {
     fontWeight: "bold",
-    fontSize: "16",
+    fontSize:'16'
   },
   closeButton: {
     backgroundColor: "#007bff",

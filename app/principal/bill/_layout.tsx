@@ -18,6 +18,7 @@ const BillLayout = () => {
         >
           <Stack.Screen name="bill" options={{ headerShown: false }} />
           <Stack.Screen name="createPos" options={{ headerShown: false }} />
+          <Stack.Screen name="createBill" options={{ headerShown: false }} />
         </Stack>
   );
 };
