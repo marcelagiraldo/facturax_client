@@ -223,7 +223,7 @@ const CreatePosModule = () => {
               renderItem={({ item }) => (
                 <TouchableOpacity
                   onPress={() => {
-                    setCliente(item.nombre);
+                    setCliente(item.numero_documento);
                     setSearchClient("");
                   }}
                   style={styles.clientItem}
