@@ -11,7 +11,7 @@ import { AntDesign, Ionicons } from "@expo/vector-icons";
 import { TextInput } from "react-native-gesture-handler";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
-import SearchBar from "../../../components/atoms/ShareBar";
+import SearchBar from "../../../components/molecules/ShareBar";
 
 const Clients = () => {
   const [infoModalVisible, setInfoModalVisible] = useState(false);
@@ -21,7 +21,7 @@ const Clients = () => {
   const [client, setClient] = useState([]);
   const router = useRouter();
 
-  const filteredClients = client.filter((client:any) =>
+  const filteredClients = client.filter((client: any) =>
     client.nombre.toLowerCase().includes(search.toLowerCase())
   );
 
@@ -52,7 +52,7 @@ const Clients = () => {
     fetchClient();
   }, []);
 
-  const handleEdit = (client:any) => {
+  const handleEdit = (client: any) => {
     router.push({
       pathname: "/principal/client/createclient",
       params: {
@@ -92,7 +92,7 @@ const Clients = () => {
       />
       <FlatList
         data={filteredClients}
-        keyExtractor={(item:any) => item.numero_documento}
+        keyExtractor={(item: any) => item.numero_documento}
         renderItem={({ item }) => (
           <TouchableOpacity
             style={styles.card}
@@ -125,7 +125,10 @@ const Clients = () => {
               </Text>
               <Text>
                 <Text style={styles.label}>Docuemnto:</Text>{" "}
-                <Text style={styles.value}> {selectedItem.numero_documento}</Text>
+                <Text style={styles.value}>
+                  {" "}
+                  {selectedItem.numero_documento}
+                </Text>
               </Text>
               <Text>
                 <Text style={styles.label}>Email:</Text>
@@ -253,7 +256,7 @@ const styles = StyleSheet.create({
   },
   label: {
     fontWeight: "bold",
-    fontSize:'16'
+    fontSize: "16",
   },
   closeButton: {
     backgroundColor: "#007bff",
@@ -280,8 +283,8 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   value: {
-    fontSize: 16, 
-    color: '#333',
+    fontSize: 16,
+    color: "#333",
   },
 });
 

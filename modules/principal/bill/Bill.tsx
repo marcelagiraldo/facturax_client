@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import { AntDesign, FontAwesome } from "@expo/vector-icons";
 import { TextInput } from "react-native-gesture-handler";
-import SearchBar from "../../../components/atoms/ShareBar";
+import SearchBar from "../../../components/molecules/ShareBar";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const BillModule = () => {
@@ -17,7 +17,7 @@ const BillModule = () => {
   const [search, setSearch] = useState("");
   const [facturas, setFacturas] = useState([]);
 
-  const filteredFacturas = facturas.filter((factura:any) =>
+  const filteredFacturas = facturas.filter((factura: any) =>
     factura.numero_factura.toLowerCase().includes(search.toLowerCase())
   );
 
@@ -45,7 +45,7 @@ const BillModule = () => {
   };
 
   useEffect(() => {
-    fetchFacturas()
+    fetchFacturas();
   }, []);
 
   const toggleDetails = (id: any) => {

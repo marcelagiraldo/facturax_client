@@ -12,7 +12,7 @@ import AntDesign from "@expo/vector-icons/AntDesign";
 import { useRouter } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-import SearchBar from "../../../components/atoms/ShareBar";
+import SearchBar from "../../../components/molecules/ShareBar";
 
 const ProductItem = ({ item, onEdit }) => (
   <View style={styles.card}>
@@ -84,7 +84,11 @@ const App = () => {
 
   return (
     <View style={styles.container}>
-      <SearchBar search={search} setSearch={setSearch} placeholder="Buscar producto"/>
+      <SearchBar
+        search={search}
+        setSearch={setSearch}
+        placeholder="Buscar producto"
+      />
 
       <View style={styles.titleContainer}>
         <Pressable onPress={handleCreate}>
@@ -144,8 +148,8 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "space-between",
     height: "auto",
-    width:'48%',
-    display:'flex'
+    width: "48%",
+    display: "flex",
   },
   productName: {
     fontWeight: "bold",
@@ -156,7 +160,7 @@ const styles = StyleSheet.create({
   editButton: {
     position: "absolute",
     right: 10,
-    top:5
+    top: 5,
   },
   statusContainer: {
     marginTop: "auto",

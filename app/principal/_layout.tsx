@@ -1,6 +1,6 @@
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { Drawer } from 'expo-router/drawer';
-import CustomDrawer from '../../components/atoms/CustomDrawer';
+import CustomDrawer from '../../components/organisms/CustomDrawer';
 import { useEffect, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 

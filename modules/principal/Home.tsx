@@ -6,7 +6,7 @@ import SvgTop from "../../components/atoms/SvgTop";
 import logo from "../../assets/facturax.png";
 import { containers } from "../../components/Tokens";
 import AntDesign from "@expo/vector-icons/AntDesign";
-import CardInfo from "../../components/atoms/CardInfo";
+import CardInfo from "../../components/molecules/CardInfo";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
