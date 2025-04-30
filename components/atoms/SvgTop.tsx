@@ -4,7 +4,7 @@ import Svg, { Ellipse } from "react-native-svg";
 
 const SvgTop = () => {
    return (
-    <View style={styles.svgContainer}>
+    <View testID="svg-top-container" style={styles.svgContainer}>
         <Svg width="390" height="150" viewBox="0 0 390 163" fill="none">
             <Ellipse cx="195" cy="7.5" rx="283" ry="155.5" fill="#003B73" />
         </Svg>

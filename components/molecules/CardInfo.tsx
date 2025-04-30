@@ -1,6 +1,5 @@
 import { View, Text, StyleSheet,Image } from "react-native";
 import React from "react";
-import AntDesign from "@expo/vector-icons/AntDesign";
 
 interface CardInfoProps {
   color: string;
@@ -12,7 +11,7 @@ interface CardInfoProps {
 
 const CardInfo = ({ color, iconComponent, iconImage , text, amount }: CardInfoProps) => {
   return (
-    <View style={[styles.card, { backgroundColor: color }]}>
+    <View style={[styles.card, { backgroundColor: color }]} testID="card-info">
       {/* Icono */}
       <View style={styles.iconContainer}>
       {iconComponent ? (

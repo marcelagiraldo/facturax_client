@@ -11,7 +11,7 @@ import { AntDesign, Ionicons } from "@expo/vector-icons";
 import { TextInput } from "react-native-gesture-handler";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
-import SearchBar from "../../../components/molecules/ShareBar";
+import SearchBar from "../../../components/molecules/SearchBar";
 
 const Clients = () => {
   const [infoModalVisible, setInfoModalVisible] = useState(false);

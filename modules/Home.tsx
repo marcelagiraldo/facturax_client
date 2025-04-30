@@ -1,13 +1,11 @@
 import { SafeAreaView } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import { useEffect, useState } from "react";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useAuth } from "../context/AuthContext";
 import HeaderSection from "../components/organisms/HeaderSection";
 import FooterSection from "../components/organisms/FooterSection";
 
 const Home = () => {
-  const insets = useSafeAreaInsets();
   const [clients, setClients] = useState([]);
   const { authState } = useAuth();
 

@@ -12,7 +12,7 @@ import AntDesign from "@expo/vector-icons/AntDesign";
 import { useRouter } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-import SearchBar from "../../../components/molecules/ShareBar";
+import SearchBar from "../../../components/molecules/SearchBar";
 
 const ProductItem = ({ item, onEdit }) => (
   <View style={styles.card}>

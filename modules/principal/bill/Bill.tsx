@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import { AntDesign, FontAwesome } from "@expo/vector-icons";
 import { TextInput } from "react-native-gesture-handler";
-import SearchBar from "../../../components/molecules/ShareBar";
+import SearchBar from "../../../components/molecules/SearchBar";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const BillModule = () => {
