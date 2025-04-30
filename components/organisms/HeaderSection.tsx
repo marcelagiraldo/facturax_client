@@ -11,6 +11,7 @@ const HeaderSection = () => (
       borderBottomLeftRadius: 30,
       borderBottomRightRadius: 30,
     }}
+    testID="header-section"
   >
     <LogoImage />
   </View>

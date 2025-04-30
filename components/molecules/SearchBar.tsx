@@ -11,7 +11,7 @@ const SearchBar = ({ search, setSearch, placeholder }) => {
         value={search}
         onChangeText={setSearch}
       />
-      <AntDesign name="search1" size={24} color="black" />
+      <AntDesign testID="search-icon" name="search1" size={24} color="black" />
     </View>
   );
 };

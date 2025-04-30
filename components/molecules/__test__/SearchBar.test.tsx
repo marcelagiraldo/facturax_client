@@ -24,10 +24,9 @@ describe('SearchBar', () => {
   });
 
   it('muestra el icono de búsqueda', () => {
-    const { UNSAFE_queryByType } = render(
+    const { getByTestId } = render(
       <SearchBar search="" setSearch={() => {}} placeholder="Buscar" />
     );
-    const icon = UNSAFE_queryByType(require('@expo/vector-icons').AntDesign);
-    expect(icon).toBeTruthy();
+    expect(getByTestId("search-icon")).toBeTruthy();
   });
 });

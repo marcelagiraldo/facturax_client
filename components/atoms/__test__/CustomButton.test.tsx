@@ -15,3 +15,16 @@ test("llama a onPress al presionar el botón", () => {
 
   expect(mockOnPress).toHaveBeenCalledTimes(1);
 });
+
+test("aplica estilos correctamente", () => {
+  const { getByText } = render(<CustomButton title="Estilos" onPress={() => {}} />);
+  const buttonText = getByText("Estilos");
+
+  expect(buttonText.props.style).toEqual(
+    expect.objectContaining({
+      color: "white",
+      fontSize: 18,
+      fontWeight: "bold"
+    })
+  );
+});
