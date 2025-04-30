@@ -12,6 +12,7 @@ import axios from "axios";
 import { useForm, Controller } from "react-hook-form";
 import { Ionicons } from "@expo/vector-icons";
 import { API_URL, useAuth } from "../../context/AuthContext";
+import { CustomAuthButton } from "../../components/organisms/CustomAuthButton";
 const LoginModule = () => {
   const router = useRouter();
   const {
@@ -98,14 +99,7 @@ const LoginModule = () => {
     <KeyboardAwareScrollView>
       <SafeAreaView style={styles.container}>
         <SvgTop />
-        <View style={styles.buttonContainer}>
-          <Pressable style={styles.loginButton}>
-            <Text style={styles.textWhite}>Iniciar Sesión</Text>
-          </Pressable>
-          <Pressable style={styles.registerButton} onPress={handleRegister}>
-            <Text style={styles.textBlack}>Registrarse</Text>
-          </Pressable>
-        </View>
+        <CustomAuthButton handleRegister={handleRegister}/>
 
         <View style={styles.contentContainer}>
           <Text style={styles.title}>Iniciar Sesión</Text>
