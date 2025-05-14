@@ -14,12 +14,34 @@ import { useRouter } from "expo-router";
 import axios from "axios";
 import { API_URL } from "../../context/AuthContext";
 import * as SecureStore from "expo-secure-store";
+import { usePushNotifications } from "../../hooks/usePushNotifications";
 
 const HomeModule = () => {
+  const { expoPushToken } = usePushNotifications();
   const [userData, setUserData] = useState(null);
   const router = useRouter();
 
+  const notification = async () =>{
+    if (expoPushToken) {
+      await fetch("https://exp.host/--/api/v2/push/send", {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          to: expoPushToken.data,
+          title: "Bienvenido",
+          body: `El usaurio "${userData.nombre_}" ha ingresado con éxito.`,
+        }),
+      });
+    }
+  }
+
   useEffect(() => {
+
+    
+
     const fetchUserData = async () => {
       const storedUser = await AsyncStorage.getItem("@userData");
 

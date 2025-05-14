@@ -14,6 +14,10 @@ import { Ionicons } from "@expo/vector-icons";
 import { API_URL, useAuth } from "../../context/AuthContext";
 import { CustomAuthButton } from "../../components/organisms/CustomAuthButton";
 const LoginModule = () => {
+  interface LoginData {
+    email:string,
+    password:string
+  }
   const router = useRouter();
   const {
     control,
@@ -31,7 +35,7 @@ const LoginModule = () => {
   const { onLogin } = useAuth();
 
   const [showPassword, setShowPassword] = useState(false);
-  const onLogin_ = async (data) => {
+  const onLogin_ = async (data:LoginData) => {
     console.log("Datos enviados al backend:", data);
     try {
       const response = await fetch("https://facturax.lat/api/usuarios/login", {

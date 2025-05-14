@@ -20,6 +20,16 @@ import axios from "axios";
 import { Ionicons } from "@expo/vector-icons";
 
 const RegisterModule = () => {
+  interface RegisterData {
+    documento: string;
+    nombre: string;
+    apellido: string;
+    email: string;
+    telefono: string;
+    confirmPassword: string;
+    contraseia: string;
+    rol: string;
+  }
   const router = useRouter();
   const {
     control,
@@ -36,52 +46,58 @@ const RegisterModule = () => {
       telefono: "",
       confirmPassword: "",
       contraseia: "",
-      rol:""
+      rol: "",
     },
   });
-  
-  const onRegister = async (data) => {
+
+  const onRegister = async (data: RegisterData) => {
     const { confirmPassword, ...userData } = data;
     const formattedUserData = {
       ...userData,
     };
-    
+
     console.log("Datos enviados al backend:", formattedUserData);
-    
+
     try {
-      const response = await fetch("https://facturax.lat/api/usuarios/register", {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        },
-        body: JSON.stringify(formattedUserData)
-      });
-  
+      const response = await fetch(
+        "https://facturax.lat/api/usuarios/register",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+          body: JSON.stringify(formattedUserData),
+        }
+      );
+
       const responseData = await response.json();
-  
+
       if (!response.ok) {
-        throw new Error(responseData.error || 'Error en el registro');
+        throw new Error(responseData.error || "Error en el registro");
       }
-  
+
       console.log("Respuesta del servidor:", response.status, responseData);
       alert("Registro exitoso");
       router.navigate("/login");
-      
     } catch (error) {
-      console.error("Error en el registro:", error.message);
-      alert(error.message || "Error al registrar");
+      if (error instanceof Error) {
+        console.error("Error en el registro:", error.message);
+        alert(error.message || "Error al registrar");
+      } else {
+        console.error("Error en el registro:", error);
+        alert("Error desconocido al registrar");
+      }
     }
   };
 
   const handleLogin = async () => {
     try {
-      router.replace("/login"); 
+      router.replace("/login");
     } catch (error) {
       console.error("Error:", error);
     }
   };
-
 
   const [showPassword, setShowPassword] = useState(false);
   const [showPasswordRepeat, setShowPasswordRepeat] = useState(false);
@@ -93,12 +109,12 @@ const RegisterModule = () => {
           <SvgTop></SvgTop>
         </View>
         <View style={styles.buttonContainer}>
-            <Pressable style={styles.loginButton} onPress={handleLogin}>
-              <Text style={styles.textBlack}>Iniciar Sesión</Text>
-            </Pressable>
-            <Pressable style={styles.registerButton}>
-              <Text style={styles.textWhite}>Registrarse</Text>
-            </Pressable>
+          <Pressable style={styles.loginButton} onPress={handleLogin}>
+            <Text style={styles.textBlack}>Iniciar Sesión</Text>
+          </Pressable>
+          <Pressable style={styles.registerButton}>
+            <Text style={styles.textWhite}>Registrarse</Text>
+          </Pressable>
         </View>
 
         <View style={styles.contentContainer}>
@@ -176,7 +192,7 @@ const RegisterModule = () => {
                   maxLength: {
                     value: 25,
                     message: "El apellido es demasiado largo",
-                  }
+                  },
                 }}
                 render={({ field: { onChange, onBlur, value } }) => (
                   <TextInput
@@ -298,13 +314,12 @@ const RegisterModule = () => {
                     color="gray"
                   />
                 </Pressable>
-                
               </View>
               {errors.contraseia && (
-                  <Text style={{ color: "red" }}>
-                    {errors.contraseia.message}
-                  </Text>
-                )}
+                <Text style={{ color: "red" }}>
+                  {errors.contraseia.message}
+                </Text>
+              )}
               <View style={styles.passwordContainer}>
                 <Controller
                   control={control}
@@ -336,13 +351,12 @@ const RegisterModule = () => {
                     color="gray"
                   />
                 </Pressable>
-                
               </View>
               {errors.confirmPassword && (
-                  <Text style={{ color: "red" }}>
-                    {errors.confirmPassword.message}
-                  </Text>
-                )}
+                <Text style={{ color: "red" }}>
+                  {errors.confirmPassword.message}
+                </Text>
+              )}
             </View>
           </View>
 

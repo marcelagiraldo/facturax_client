@@ -1,13 +1,20 @@
-import { SafeAreaView } from "react-native";
+import { Pressable, SafeAreaView, Text, View } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import HeaderSection from "../components/organisms/HeaderSection";
 import FooterSection from "../components/organisms/FooterSection";
+import { useRouter } from "expo-router";
 
 const Home = () => {
   const [clients, setClients] = useState([]);
   const { authState } = useAuth();
+
+  const router = useRouter();
+
+  const goToNotes = () => {
+    router.push("/principal/notes");
+  };
 
   useEffect(() => {
     console.log("authState:", authState);
@@ -25,7 +32,9 @@ const Home = () => {
     <SafeAreaView style={{ flex: 1, backgroundColor: "#F3F4F6" }}>
       <StatusBar hidden={false} style="light" />
       <HeaderSection />
+      
       <FooterSection />
+      
     </SafeAreaView>
   );
 };
