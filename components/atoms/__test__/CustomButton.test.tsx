@@ -1,0 +1,32 @@
+import React from "react";
+import { render,fireEvent } from "@testing-library/react-native";
+import CustomButton from "../CustomButton"
+
+describe('Custom Button Component', () => {
+  it("renderiza correctamente con el título dado", () => {
+    const { getByText } = render(<CustomButton title="Presionar" onPress={() => {}} />);
+    expect(getByText("Presionar")).toBeTruthy();
+  });
+  
+  it("llama a onPress al presionar el botón", () => {
+    const mockOnPress = jest.fn();
+    const { getByText } = render(<CustomButton title="Click me" onPress={mockOnPress} />);
+  
+    fireEvent.press(getByText("Click me"));
+  
+    expect(mockOnPress).toHaveBeenCalledTimes(1);
+  });
+  
+  it("aplica estilos correctamente", () => {
+    const { getByText } = render(<CustomButton title="Estilos" onPress={() => {}} />);
+    const buttonText = getByText("Estilos");
+  
+    expect(buttonText.props.style).toEqual(
+      expect.objectContaining({
+        color: "white",
+        fontSize: 18,
+        fontWeight: "bold"
+      })
+    );
+  });
+})
