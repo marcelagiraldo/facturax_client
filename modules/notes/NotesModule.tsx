@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -6,6 +6,7 @@ import {
   FlatList,
   ListRenderItem,
   Pressable,
+  ActivityIndicator,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
@@ -17,47 +18,49 @@ import {
 } from "@expo/vector-icons";
 import LogoImage from "../../components/atoms/LogoImage";
 import { router } from "expo-router";
-import { useRoute } from "@react-navigation/native";
+import { useSQLiteContext } from "expo-sqlite";
+import { drizzle } from "drizzle-orm/expo-sqlite";
+import { useDrizzleStudio } from "expo-drizzle-studio-plugin";
+import { schema } from "../../db/schema";
+import { eq } from "drizzle-orm";
 
-const notes = [
-  {
-    id: "1",
-    title: "Revisión médica anual de pacientes con condicion impoertante",
-    date: "12/05/2025",
-  },
-  {
-    id: "2",
-    title: "Compra de suplementos",
-    date: "15/05/2025",
-  },
-  {
-    id: "3",
-    title: "Actualizar historial clínico",
-    date: "20/05/2025",
-  },
-  {
-    id: "4",
-    title: "Revisión médica anual de pacientes con condicion impoertante",
-    date: "12/05/2025",
-  },
-  {
-    id: "5",
-    title: "Compra de suplementos",
-    date: "15/05/2025",
-  },
-  {
-    id: "6",
-    title: "Actualizar historial clínico",
-    date: "20/05/2025",
-  },
-];
-
+interface Note {
+  id: string;
+  title: string;
+  date: string;
+}
 const NoteModule = () => {
-  interface Note {
-    id: string;
-    title: string;
-    date: string;
+  const [notes, setNotes] = useState<Note[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+
+  const db = useSQLiteContext();
+  const drizzleDb = drizzle(db, { schema });
+  useDrizzleStudio(db);
+
+  useEffect(() => {
+    const fetchNotes = async () => {
+      try {
+        const result = await drizzleDb.query.notes.findMany();
+        setNotes(result);
+      } catch (error) {
+        console.error("Error al obtener las notas desde SQLite:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchNotes();
+  }, []);
+
+  const handleDeleteNote = async (id: string) => {
+  try {
+    await drizzleDb.delete(schema.notes).where(eq(schema.notes.id, Number(id)));
+    setNotes((prevNotes) => prevNotes.filter((note) => note.id !== id));
+  } catch (error) {
+    console.error("Error al eliminar nota local:", error);
   }
+};
+
   const renderItem: ListRenderItem<Note> = ({ item }) => (
     <View style={styles.noteItem}>
       <View style={styles.row}>
@@ -69,7 +72,9 @@ const NoteModule = () => {
         <Text style={styles.noteDate}>{item.date}</Text>
       </View>
       <View style={styles.icons}>
-        <AntDesign name="checkcircle" size={30} color="green" />
+        <Pressable onPress={() => handleDeleteNote(item.id)}>
+          <AntDesign name="checkcircle" size={30} color="green" />
+        </Pressable>
       </View>
     </View>
   );
@@ -77,17 +82,17 @@ const NoteModule = () => {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor="#003B73" style="light" />
-      {/* Cabecera visual */}
+
+      {/* Cabecera */}
       <View
         style={{
-          flex: .5,
+          flex: 0.5,
           alignItems: "center",
           justifyContent: "center",
           backgroundColor: "#003B73",
           borderBottomLeftRadius: 30,
           borderBottomRightRadius: 30,
         }}
-        testID="header-section"
       >
         <LogoImage />
       </View>
@@ -95,18 +100,23 @@ const NoteModule = () => {
       {/* Contenido */}
       <View style={styles.content}>
         <Text style={styles.title}>Notas</Text>
-        <FlatList
-          data={notes}
-          renderItem={renderItem}
-          keyExtractor={(item) => item.id}
-          showsVerticalScrollIndicator={false}
-        />
+        {loading ? (
+          <ActivityIndicator size="large" color="#003B73" />
+        ) : (
+          <FlatList
+            data={notes}
+            renderItem={renderItem}
+            keyExtractor={(item) => item.id}
+            showsVerticalScrollIndicator={false}
+          />
+        )}
       </View>
+
+      {/* Botón flotante */}
       <View style={styles.fab}>
         <Pressable onPress={() => router.replace("/notes/createNote")}>
           <Ionicons name="add" size={50} color="white" />
         </Pressable>
-        
       </View>
     </SafeAreaView>
   );
@@ -116,24 +126,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#003B73",
-  },
-  header: {
-    flex: 0.5,
-    position: "relative",
-    justifyContent: "flex-end",
-    backgroundColor: "#003B73",
-    borderBottomLeftRadius: 30,
-    borderBottomRightRadius: 30,
-    overflow: "hidden",
-  },
-  logoWrapper: {
-    position: "absolute",
-    bottom: 10,
-    left: 20,
-  },
-  logo: {
-    width: 100,
-    height: 100,
   },
   content: {
     flex: 2,
@@ -151,9 +143,8 @@ const styles = StyleSheet.create({
     backgroundColor: "#B9D4F4",
     borderRadius: 12,
     width: 300,
-    position: "relative",
     marginBottom: 10,
-    padding:10
+    padding: 10,
   },
   noteTitle: {
     fontSize: 18,
@@ -161,7 +152,7 @@ const styles = StyleSheet.create({
   },
   noteDate: {
     fontSize: 14,
-    width:200
+    width: 200,
   },
   icons: {
     position: "absolute",

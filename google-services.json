@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1083945492798",
+    "project_id": "facturaxexpo",
+    "storage_bucket": "facturaxexpo.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1083945492798:android:6b736369e7132d4120cc6f",
+        "android_client_info": {
+          "package_name": "com.marceag04.facturax"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA-FDgF_FllvdBDL2h7dmWz0OKuqIAg9Rs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

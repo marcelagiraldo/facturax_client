@@ -1,7 +1,7 @@
-import HomeModule from '../modules/Home';
+import Home from "~/modules/Home";
 
 const Index = () => {
-  return <HomeModule/>;
+  return <Home/>;
 };
 
 export default Index;

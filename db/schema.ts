@@ -1,14 +1,14 @@
-import {sqliteTable,text,integer} from "drizzle-orm/sqlite-core"
+import { sqliteTable, text, integer } from "drizzle-orm/sqlite-core";
 
-export const tasks = sqliteTable('tasks',{
-    id: integer('id').primaryKey({autoIncrement:true}),
-    name: text('name').notNull(),
-    list_id: integer('list_id').notNull().references(()=>lists.id)
-})
+// Tabla de notas (sin categorías)
+export const notes = sqliteTable('notes', {
+  id: integer('id').primaryKey({ autoIncrement: true }),
+  title: text('title').notNull(),
+  date: text('date').notNull() // Puedes usar ISO (ej: "2025-05-21")
+});
 
-export const lists = sqliteTable('lists',{
-    id:integer('id').primaryKey({autoIncrement:true}),
-    name:text('name').notNull()
-})
+// Tipos TypeScript inferidos
+export type Note = typeof notes.$inferSelect;
+export type NewNote = typeof notes.$inferInsert;
 
-export type Task = typeof tasks.$inferSelect
+export const schema = { notes } as const;

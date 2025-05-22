@@ -1,38 +1,20 @@
 import AsyncStorage from "expo-sqlite/kv-store";
 import { ExpoSQLiteDatabase } from "drizzle-orm/expo-sqlite";
-import { lists, tasks } from "./schema";
+import { notes } from "./schema";
 
+export const addDummyData = async (db: ExpoSQLiteDatabase) => {
+  const value = AsyncStorage.getItemSync('dbInitialized');
+  if (value) return;
 
-export const addDummyData = async(db:ExpoSQLiteDatabase)=>{
-    const value = AsyncStorage.getItemSync('dbInitialized')
-    if(value) return
+  console.log('Inserting dummy notes');
 
-    console.log('Inserting list');
+  await db.insert(notes).values([
+    { title: 'Revisión médica anual', date: '2025-05-21' },
+    { title: 'Control de presión arterial', date: '2025-06-01' },
+    { title: 'Factura cliente A', date: '2025-05-10' },
+    { title: 'Enviar factura recurrente', date: '2025-05-15' },
+    { title: 'Comprar libros', date: '2025-05-12' },
+  ]);
 
-    await db.insert(lists).values([
-        {name:"List 1"},
-        {name:"List 2"},
-        {name:"List 3"},
-    ])
-
-    await db.insert(tasks).values([
-        {name:'Task 1',list_id:1},
-        {name:'Task 2',list_id:1},
-        {name:'Task 3',list_id:1}
-    ])
-
-    await db.insert(tasks).values([
-        {name:'Task 1',list_id:2},
-        {name:'Task 2',list_id:2},
-        {name:'Task 3',list_id:2}
-    ])
-
-    await db.insert(tasks).values([
-        {name:'Task 1',list_id:3},
-        {name:'Task 2',list_id:3},
-        {name:'Task 3',list_id:3}
-    ])
-
-    AsyncStorage.setItemAsync('dbInitialized','true')
-    
-}
+  await AsyncStorage.setItemAsync('dbInitialized', 'true');
+};

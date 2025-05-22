@@ -8,24 +8,35 @@ import {
   Alert,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { router } from "expo-router";
-import { Ionicons } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
+import { useSQLiteContext } from "expo-sqlite";
+import { drizzle } from "drizzle-orm/expo-sqlite";
+import { schema } from "../../db/schema"; // Asegúrate que esté bien la ruta
 
 const CreateNotes = () => {
   const [title, setTitle] = useState("");
   const [date, setDate] = useState("");
-
-  const handleSave = () => {
+  const router = useRouter();
+  const db = useSQLiteContext();
+  const drizzleDb = drizzle(db, { schema });
+  const handleSave = async () => {
     if (!title || !date) {
       Alert.alert("Error", "Por favor completa todos los campos.");
       return;
     }
 
-    // Aquí podrías guardar en una API o base de datos
-    console.log("Nota creada:", { title, date });
+    try {
+      await drizzleDb.insert(schema.notes).values({
+        title,
+        date,
+      });
 
-    Alert.alert("Éxito", "Nota guardada correctamente.");
-    router.back(); // Vuelve a la pantalla anterior
+      Alert.alert("Éxito", "Nota guardada localmente.");
+      router.replace("/notes/notes");
+    } catch (error: any) {
+      console.error("Error al guardar la nota local:", error);
+      Alert.alert("Error", error.message || "No se pudo guardar la nota.");
+    }
   };
 
   return (
@@ -45,7 +56,7 @@ const CreateNotes = () => {
       <View style={styles.inputGroup}>
         <Text style={styles.label}>Fecha</Text>
         <TextInput
-          placeholder="DD/MM/AAAA"
+          placeholder="DD/MM/YYYY"
           style={styles.input}
           value={date}
           onChangeText={setDate}
