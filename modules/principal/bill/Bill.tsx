@@ -41,7 +41,6 @@ const BillModule = () => {
         `https://facturax.lat/api/facturas/${adminId}`
       );
       const data = await response.json();
-      console.log("data: ", data);
 
       setFacturas(data);
     } catch (error) {

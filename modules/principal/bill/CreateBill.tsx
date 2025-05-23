@@ -4,6 +4,7 @@ import { useRoute } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
 import { Picker } from "@react-native-picker/picker";
+import { usePushNotifications } from "~/hooks/usePushNotifications";
 
 const CreateBill = () => {
   const route = useRoute();
@@ -11,11 +12,10 @@ const CreateBill = () => {
   const router = useRouter();
   const [userRole, setUserRole] = useState<string | null>(null);
   const [metodoPago, setMetodoPago] = useState<string>("efectivo");
+  const { expoPushToken } = usePushNotifications();
 
   const productos = JSON.parse(route.params.productos);
 
-  console.log("route.params: ", route.params);
-  console.log("client bill: ", cliente);
   const crearFactura = async () => {
     try {
       const storedUser = await AsyncStorage.getItem("@userData");
@@ -36,7 +36,7 @@ const CreateBill = () => {
         administrador_id: user_id, // reemplaza con el real
         productos: productos.map((p) => p.codigo),
         cantidades: productos.map((p) => p.cantidad),
-        metodo_pago: metodoPago, // asegúrate de tener `cantidad` en cada producto
+        metodoPago: metodoPago,
       };
       console.log("payload: ", payload);
 
@@ -53,9 +53,22 @@ const CreateBill = () => {
       if (!response.ok) {
         throw new Error(data.error || "Error al crear factura");
       }
+      router.replace("principal/pos/createPos");
 
-      console.log("Factura creada con ID:", data.factura_id);
-      router.replace("principal/bill/createPos");
+      if (expoPushToken) {
+        await fetch("https://exp.host/--/api/v2/push/send", {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            to: expoPushToken.data,
+            title: "Factura creada",
+            body: `La factura "${payload.numero_factura}" ha sido creada.`,
+          }),
+        });
+      }
     } catch (error) {
       console.error("Error al crear factura:", error.message);
     }

@@ -65,7 +65,6 @@ const HomeModule = () => {
 
       if (storedUser) {
         const parsedUser = JSON.parse(storedUser);
-        console.log("Datos del usuario en AsyncStorage:", parsedUser);
         setUserData(parsedUser);
 
         try {
@@ -73,7 +72,6 @@ const HomeModule = () => {
             `${API_URL}/usuarios/${parsedUser.documento}`
           );
           setUserData(result.data);
-          console.log("Datos del usuario desde el backend:", result.data);
         } catch (err) {
           console.error(
             "Error al obtener usuario:",
@@ -88,7 +86,7 @@ const HomeModule = () => {
 
   const handleCreate = async () => {
     try {
-      router.replace("/principal/bill/createPos");
+      router.replace("/principal/pos/createPos");
     } catch (error) {
       console.error("Error:", error);
     }

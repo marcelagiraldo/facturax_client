@@ -45,7 +45,6 @@ const LoginModule = () => {
   const [showPassword, setShowPassword] = useState(false);
 
   const onLogin_ = async (data: LoginData) => {
-    console.log("Datos enviados al backend:", data);
     try {
       const response = await fetch("https://facturax.lat/api/usuarios/login", {
         method: "POST",
@@ -180,14 +179,8 @@ const LoginModule = () => {
             )}
 
             <View style={styles.login}>
-              <Pressable style={styles.loginButton} onPress={login}>
+              <Pressable style={styles.loginButton} onPress={handleSubmit(login)}>
                 <Text style={styles.textWhite}>Iniciar Sesión</Text>
-              </Pressable>
-
-              <Pressable className="mt-4">
-                <Text className="text-blue-500 text-lg">
-                  ¿Olvidaste la contraseña?
-                </Text>
               </Pressable>
             </View>
           </View>

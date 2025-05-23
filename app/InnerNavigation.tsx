@@ -12,14 +12,13 @@ import { ActivityIndicator } from "react-native";
 const InnerNavigator = () => {
   const sqlite = useSQLiteContext();
   const db = drizzle(sqlite, { schema });
-  console.log("🔍 schema:", schema);
 
   const { success, error } = useMigrations(db, migrations);
 
   useEffect(() => {
     if (success) {
       console.log("✅ Migraciones aplicadas con éxito");
-      addDummyData(db); // Aquí ya sí estamos usando el db correcto
+      addDummyData(db); 
     }
     if (error) {
       console.error("❌ Error aplicando migraciones:", error);

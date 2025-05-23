@@ -8,17 +8,28 @@ import {
 import axios from "axios";
 import * as SecureStore from "expo-secure-store";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+interface AuthState {
+  token: string | null;
+  authenticated: boolean;
+  loading: boolean;
+}
 
 interface AuthProps {
-  authState?: { token: string | null; authenticated: boolean | null };
-  onRegister?: (email: string, password: string) => Promise<any>;
-  onLogin?: (email: string, password: string) => Promise<any>;
-  onLogout?: () => Promise<any>;
+  authState: AuthState;
+  onRegister: (email: string, password: string) => Promise<any>;
+  onLogin: (email: string, password: string) => Promise<any>;
+  onLogout: () => Promise<any>;
 }
+
 
 const TOKEN_KEY = "my-jwt";
 export const API_URL = "https://facturax.lat/api";
-const AuthContext = createContext<AuthProps>({});
+const AuthContext = createContext<AuthProps>({
+  authState: { token: null, authenticated: false, loading: true },
+  onRegister: async () => {},
+  onLogin: async () => {},
+  onLogout: async () => {},
+});
 
 export const useAuth = () => {
   return useContext(AuthContext);
@@ -27,31 +38,33 @@ export const useAuth = () => {
 export const AuthProvider = ({ children }: any) => {
   const [authState, setAuthState] = useState<{
     token: string | null;
-    authenticated: boolean | null;
+    authenticated: boolean;
+    loading: boolean;
   }>({
     token: null,
-    authenticated: null,
+    authenticated: false,
+    loading: true, // al inicio se está cargando
   });
 
   useEffect(() => {
     const loadToken = async () => {
       const token = await SecureStore.getItemAsync(TOKEN_KEY);
-      console.log("TOKEN CARGADO EN EL INICIO:", token);
-      console.log("stored: ", token);
-
       if (token) {
         axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
         setAuthState({
-          token: token,
+          token,
           authenticated: true,
+          loading: false,
         });
       } else {
         setAuthState({
           token: null,
           authenticated: false,
+          loading: false,
         });
       }
     };
+
     loadToken();
   }, []);
 
@@ -75,8 +88,9 @@ export const AuthProvider = ({ children }: any) => {
       console.log("~file: AuthContext.tsx:41 ~ login ~ result: ", result.data);
 
       setAuthState({
-        token: result.data.token,
-        authenticated: true,
+        token: null,
+        authenticated: false,
+        loading: false,
       });
 
       axios.defaults.headers.common["Authorization"] =
@@ -100,6 +114,7 @@ export const AuthProvider = ({ children }: any) => {
     setAuthState({
       token: null,
       authenticated: false,
+      loading: false,
     });
   };
 

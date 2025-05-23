@@ -61,7 +61,6 @@ const CreatePosModule = () => {
         `https://facturax.lat/api/productos/${user_id}`
       );
       const data = await response.json();
-      console.log("data productos: ", data);
 
       setProducts(data);
     } catch (error) {
@@ -87,7 +86,6 @@ const CreatePosModule = () => {
         `https://facturax.lat/api/clientes/${user_id}`
       );
       const data = await response.json();
-      console.log("data clientes: ", data);
       setClient(data);
     } catch (error) {
       console.log("Error al obtener los clientes: ", error);
@@ -98,7 +96,6 @@ const CreatePosModule = () => {
     try {
       const response = await fetch(`https://facturax.lat/api/impuestos/`);
       const data = await response.json();
-      console.log("Invoice", data);
 
       setInvoice(data);
     } catch (error) {
@@ -123,7 +120,6 @@ const CreatePosModule = () => {
       iva: ivaEncontrado ? Number(ivaEncontrado.p_porcentaje) : 0,
       cantidad: 1,
     };
-    console.log("producto formateado: ", productoFormateado);
 
     if (existe) {
       const productosActualizados = productosSeleccionados.map((p) =>
@@ -165,11 +161,8 @@ const CreatePosModule = () => {
       const ivaEncontrado = invoice.find(
         (i) => i.p_identificacion === p.impuesto_id_fk
       );
-      console.log("Iva enconytrado: ", ivaEncontrado.p_porcentaje);
 
       const ivaDecimal = (Number(ivaEncontrado.p_porcentaje) || 0) / 100;
-      console.log("Precio decimal: ", precioConCantidad);
-      console.log("decimal: ", ivaDecimal);
 
       return total + precioConCantidad * ivaDecimal;
     }, 0);

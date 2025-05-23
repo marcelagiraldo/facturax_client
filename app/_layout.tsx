@@ -1,29 +1,16 @@
-import { drizzle } from "drizzle-orm/expo-sqlite";
 import { Stack, useRouter } from "expo-router";
-import {openDatabaseAsync, openDatabaseSync, SQLiteProvider } from "expo-sqlite";
+import { SQLiteProvider } from "expo-sqlite";
 import { Suspense, useEffect } from "react";
 import { ActivityIndicator, View } from "react-native";
 import { AuthProvider, useAuth } from "../context/AuthContext";
-/* import {
-  SQLiteProvider,
-  openDatabaseSync,
-  useSQLiteContext,
-} from "expo-sqlite"; */
-import { useMigrations } from "drizzle-orm/expo-sqlite/migrator";
-import { addDummyData } from "~/db/addDummyData";
-import migrations from "~/drizzle/migrations";
-//import { addDummyData } from "../db/addDummyData";
-//import { View } from "react-native-reanimated/lib/typescript/Animated";
-
-/* Va en el index */
-import * as schema from '../db/schema'
 import InnerNavigator from "./InnerNavigation";
-export const DATABASE_NAME = "tasks";
 
-const HomeLayoutContent = () => {
+const DATABASE_NAME = "tasks";
+
+const LayoutContent = () => {
   const { authState } = useAuth();
 
-  if (authState?.authenticated === null) {
+  if (authState.loading) {
     return (
       <ActivityIndicator
         size="large"
@@ -47,13 +34,12 @@ const HomeLayoutContent = () => {
   );
 };
 
-
-const HomeLayout = () => {
+const HomeLayout = () =>{
   return (
     <AuthProvider>
-      <HomeLayoutContent />
+      <LayoutContent />
     </AuthProvider>
   );
-};
+}
 
 export default HomeLayout;
